@@ -1,5 +1,5 @@
 # AutoScroll
-AutoScroll is a plugin for [BetterDiscord](https://betterdiscord.app/) that brings the autoscroll feature to the GNU/Linux and macOS client. This plugin is a fork of [AutoScroll by Pauan](https://github.com/Pauan/AutoScroll), licensed under the [X11/MIT License](https://github.com/Pauan/AutoScroll/blob/master/src/LICENSE), see [LICENSE](https://gitlab.com/programmerpony/BD-AutoScroll/-/raw/main/LICENSE) for terms of use.
+AutoScroll is a plugin for [BetterDiscord](https://betterdiscord.app/) that brings the mouse wheel button autoscroll feature to the GNU/Linux and macOS client. This plugin is a fork of the [AutoScroll extension made by Pauan](https://github.com/Pauan/AutoScroll), licensed under the [X11/MIT License](https://github.com/Pauan/AutoScroll/blob/master/src/LICENSE).
 
 ![Demo](https://cdn.discordapp.com/attachments/862296245922037800/934057299729870868/autoscroll.gif)
 
