@@ -74,7 +74,7 @@ module.exports = class AutoScroll {
         let target = (path.length === 0 ? null : path[0]);
         if (target != null && ((e.button === 1 && true) || (e.button === 0 && (e.ctrlKey || e.metaKey) && true)) && e.clientX < htmlNode.clientWidth && e.clientY < htmlNode.clientHeight && isValid(target)) {
           let elem = findScroll(target);
-          if (elem !== null) {
+          if (elem) {
             stopEvent(e, true);
             show(elem, e.clientX, e.clientY);
           }
