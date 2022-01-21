@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll on GNU/Linux and macOS! This plugin is a fork of [AutoScroll by Pauan](https://github.com/Pauan/AutoScroll), licensed under the [X11/MIT License](https://gitlab.com/programmerpony/BD-AutoScroll/-/raw/main/LICENSE).
- * @version 0.1
+ * @version 0.1.1
  * @authorLink https://fosstodon.org/@Luna
  * @donate https://ko-fi.com/programmerpony
  * @source https://gitlab.com/programmerpony/BD-AutoScroll
@@ -41,7 +41,7 @@ module.exports = class AutoScroll {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.1';
+    return '0.1.1';
   }
   getAuthor() {
     return 'programmerpony';
