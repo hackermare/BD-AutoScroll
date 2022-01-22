@@ -3,6 +3,7 @@
  * @author programmerpony
  * @description Autoscroll on GNU/Linux and macOS! This plugin is a fork of [AutoScroll by Pauan](https://github.com/Pauan/AutoScroll), licensed under the [X11/MIT License](https://gitlab.com/programmerpony/BD-AutoScroll/-/raw/main/LICENSE).
  * @version 0.1.1
+ * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://fosstodon.org/@Luna
  * @donate https://ko-fi.com/programmerpony
  * @source https://gitlab.com/programmerpony/BD-AutoScroll
