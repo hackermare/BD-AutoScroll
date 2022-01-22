@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll on GNU/Linux and macOS! This plugin is a fork of [AutoScroll by Pauan](https://github.com/Pauan/AutoScroll), licensed under the [X11/MIT License](https://gitlab.com/programmerpony/BD-AutoScroll/-/raw/main/LICENSE).
- * @version 0.1.2
+ * @version 0.2.0
  * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://fosstodon.org/@Luna
  * @donate https://ko-fi.com/programmerpony
@@ -39,10 +39,10 @@ THE SOFTWARE.
 
 */
 
-var enabled;
-var htmlNode;
-var bodyNode;
-var state = {
+let enabled;
+let htmlNode;
+let bodyNode;
+let state = {
   timeout: null,
   oldX: null,
   oldY: null,
@@ -51,10 +51,14 @@ var state = {
   click: false,
   scrolling: false
 }
-var inner;
+let inner;
 const math = {
   hypot: (x, y) => {
     return Math.sqrt(x * x + y * y);
+  },
+  max: (num, cap) => {
+    let neg = cap * -1;
+    return (num > cap ? cap : (num < neg ? neg : num));
   },
   angle: (x, y) => {
     let angle = Math.atan(y / x) / (Math.PI / 180)
@@ -67,13 +71,33 @@ const math = {
   }
 }
 
+const Slider = BdApi.findModuleByDisplayName('Slider');
+const Switch = BdApi.findModuleByDisplayName('Switch');
+class CheckBox extends BdApi.React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {checked: this.props.checked};
+    }
+    render() {
+        return (
+          BdApi.React.createElement(Switch, {
+            id: this.props.id,
+            checked: this.state.checked,
+            onChange: (value) => {
+                this.setState({ checked: value });
+                this.props.onChange(value);
+                this.forceUpdate();
+            }
+      }));
+    }
+}
 
 module.exports = class AutoScroll {
   getName() {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.1.2';
+    return '0.2.0';
   }
   getAuthor() {
     return 'programmerpony';
@@ -118,6 +142,34 @@ module.exports = class AutoScroll {
   }
   stop() {
     enabled = false;
+  }
+
+  getSettingsPanel() {
+    return (
+      BdApi.React.createElement('div', { id: 'autoscroll_settings' },
+        BdApi.React.createElement('label', {class: 'title-2dsDLn'}, 'Move speed'),
+        BdApi.React.createElement('br', {}),
+        BdApi.React.createElement(Slider, {
+          minValue: 2,
+          maxValue: 20,
+          defaultValue: 10,
+          initialValue: BdApi.loadData('AutoScroll', 'speed') || 10,
+          onValueChange: ((value) => BdApi.saveData('AutoScroll', 'speed', value)),
+          markers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+          stickToMarkers: true,
+          equidistant: true
+        }),
+        BdApi.React.createElement('br', {}),
+        BdApi.React.createElement('div', {class:'labelRow-2jl9gK'},
+          BdApi.React.createElement('label', {for: 'sameSpeedCheckbox', class: 'title-2dsDLn'}, 'Scroll at the same speed (ignore mouse movement)'),
+          BdApi.React.createElement(CheckBox, {
+            id:'sameSpeedCheckbox',
+            checked: BdApi.loadData('AutoScroll', 'sameSpeed') || false,
+            onChange: ((value) => BdApi.saveData('AutoScroll', 'sameSpeed', value))
+          })
+        )
+      )
+    );
   }
 };
 
@@ -235,7 +287,8 @@ function shouldSticky(x, y) {
 }
 
 function scale(value) {
-  return value / 10;
+  let speed = BdApi.loadData('AutoScroll','speed') || 10;
+  return value / (21-speed);
 }
 
 function mousewheel(event) {
@@ -247,6 +300,10 @@ function mousemove(event) {
   let x = event.clientX - state.oldX, y = event.clientY - state.oldY;
   if (math.hypot(x, y) > 10) {
     inner.style.setProperty('cursor', direction(x, y));
+    if (BdApi.loadData('AutoScroll','sameSpeed')) {
+      x = math.max(x, 1) * 50;
+      y = math.max(y, 1) * 50;
+    }
     x = scale(x);
     y = scale(y);
     state.dirX = x;
