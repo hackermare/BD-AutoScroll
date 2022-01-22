@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll on GNU/Linux and macOS! This plugin is a fork of [AutoScroll by Pauan](https://github.com/Pauan/AutoScroll), licensed under the [X11/MIT License](https://gitlab.com/programmerpony/BD-AutoScroll/-/raw/main/LICENSE).
- * @version 0.1.1
+ * @version 0.1.2
  * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://fosstodon.org/@Luna
  * @donate https://ko-fi.com/programmerpony
@@ -39,6 +39,7 @@ THE SOFTWARE.
 
 */
 
+var enabled;
 var htmlNode;
 var bodyNode;
 var state = {
@@ -72,7 +73,7 @@ module.exports = class AutoScroll {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.1.1';
+    return '0.1.2';
   }
   getAuthor() {
     return 'programmerpony';
@@ -82,6 +83,7 @@ module.exports = class AutoScroll {
   }
   load() {}
   start() {
+    enabled = true;
     htmlNode = document.documentElement;
     bodyNode = document.body ? document.body : htmlNode;
     let outer = document.createElementNS('http://www.w3.org/1999/xhtml', 'auto-scroll');
@@ -99,6 +101,7 @@ module.exports = class AutoScroll {
     shadow.appendChild(inner);
     htmlNode.appendChild(outer);
     addEventListener('mousedown', (e) => {
+      if (!enabled) return;
       if (state.scrolling) stopEvent(e, true);
       else {
         let path = e.composedPath();
@@ -114,8 +117,7 @@ module.exports = class AutoScroll {
     }, true);
   }
   stop() {
-    // Not even the original extension has a script to stop
-    location.reload();
+    enabled = false;
   }
 };
 
