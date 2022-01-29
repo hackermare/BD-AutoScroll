@@ -1,8 +1,8 @@
 /**
  * @name AutoScroll
  * @author programmerpony
- * @description Autoscroll on GNU/Linux and macOS! This plugin is a fork of [AutoScroll by Pauan](https://github.com/Pauan/AutoScroll), licensed under the [X11/MIT License](https://gitlab.com/programmerpony/BD-AutoScroll/-/raw/main/LICENSE).
- * @version 0.2.0
+ * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
+ * @version 0.2.1
  * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://fosstodon.org/@Luna
  * @donate https://ko-fi.com/programmerpony
@@ -97,13 +97,13 @@ module.exports = class AutoScroll {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.2.0';
+    return '0.2.1';
   }
   getAuthor() {
     return 'programmerpony';
   }
   getDescription() {
-    return 'Autoscroll on GNU/Linux and macOS! This plugin is a fork of [AutoScroll by Pauan](https://github.com/Pauan/AutoScroll), licensed under the [X11/MIT License](https://gitlab.com/programmerpony/BD-AutoScroll/-/raw/main/LICENSE).';
+    return 'Autoscroll with the mouse wheel button on GNU/Linux and macOS!';
   }
   load() {}
   start() {
