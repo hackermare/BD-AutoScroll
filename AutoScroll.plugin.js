@@ -225,18 +225,6 @@ function canScroll(style) {
   return style === 'auto' || style === 'scroll';
 }
 
-function canScrollTop(html, body) {
-  switch (html) {
-    case 'visible':
-      return body !== 'hidden';
-    case 'auto':
-    case 'scroll':
-      return true;
-    default:
-      return false;
-  }
-}
-
 function stopEvent(e, preventDefault) {
   e.stopImmediatePropagation();
   e.stopPropagation();
