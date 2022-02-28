@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
- * @version 0.2.1
+ * @version 0.2.2
  * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://fosstodon.org/@Luna
  * @donate https://ko-fi.com/programmerpony
@@ -39,7 +39,6 @@ THE SOFTWARE.
 
 */
 
-let enabled;
 let htmlNode;
 let bodyNode;
 let state = {
@@ -92,12 +91,27 @@ class CheckBox extends BdApi.React.Component {
     }
 }
 
+const mouseListener = (e) => {
+  if (state.scrolling) stopEvent(e, true);
+  else {
+    let path = e.composedPath();
+    let target = (path.length === 0 ? null : path[0]);
+    if (target != null && ((e.button === 1 && true) || (e.button === 0 && (e.ctrlKey || e.metaKey) && true)) && e.clientX < htmlNode.clientWidth && e.clientY < htmlNode.clientHeight && isValid(target)) {
+      let elem = findScroll(target);
+      if (elem) {
+        stopEvent(e, true);
+        show(elem, e.clientX, e.clientY);
+      }
+    }
+  }
+}
+
 module.exports = class AutoScroll {
   getName() {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.2.1';
+    return '0.2.2';
   }
   getAuthor() {
     return 'programmerpony';
@@ -107,7 +121,6 @@ module.exports = class AutoScroll {
   }
   load() {}
   start() {
-    enabled = true;
     htmlNode = document.documentElement;
     bodyNode = document.body ? document.body : htmlNode;
     let outer = document.createElementNS('http://www.w3.org/1999/xhtml', 'auto-scroll');
@@ -124,24 +137,10 @@ module.exports = class AutoScroll {
     inner.style.setProperty('background-repeat', 'no-repeat');
     shadow.appendChild(inner);
     htmlNode.appendChild(outer);
-    addEventListener('mousedown', (e) => {
-      if (!enabled) return;
-      if (state.scrolling) stopEvent(e, true);
-      else {
-        let path = e.composedPath();
-        let target = (path.length === 0 ? null : path[0]);
-        if (target != null && ((e.button === 1 && true) || (e.button === 0 && (e.ctrlKey || e.metaKey) && true)) && e.clientX < htmlNode.clientWidth && e.clientY < htmlNode.clientHeight && isValid(target)) {
-          let elem = findScroll(target);
-          if (elem) {
-            stopEvent(e, true);
-            show(elem, e.clientX, e.clientY);
-          }
-        }
-      }
-    }, true);
+    addEventListener('mousedown', mouseListener, true);
   }
   stop() {
-    enabled = false;
+    removeEventListener('mousedown', mouseListener, true);
   }
 
   getSettingsPanel() {
