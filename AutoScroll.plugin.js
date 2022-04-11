@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
- * @version 0.2.2
+ * @version 0.2.3
  * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://fosstodon.org/@Luna
  * @donate https://ko-fi.com/programmerpony
@@ -50,6 +50,7 @@ let state = {
   click: false,
   scrolling: false
 }
+let outer;
 let inner;
 const math = {
   hypot: (x, y) => {
@@ -111,7 +112,7 @@ module.exports = class AutoScroll {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.2.2';
+    return '0.2.3';
   }
   getAuthor() {
     return 'programmerpony';
@@ -123,9 +124,9 @@ module.exports = class AutoScroll {
   start() {
     htmlNode = document.documentElement;
     bodyNode = document.body ? document.body : htmlNode;
-    let outer = document.createElementNS('http://www.w3.org/1999/xhtml', 'auto-scroll');
+    outer = document.createElement('auto-scroll');
     let shadow = outer.attachShadow ? outer.attachShadow({ mode: 'closed' }) : outer.createShadowRoot();
-    inner = document.createElementNS('http://www.w3.org/1999/xhtml', 'div');
+    inner = document.createElement('div');
     inner.style.setProperty('transform', 'translateZ(0)');
     inner.style.setProperty('display', 'none');
     inner.style.setProperty('position', 'fixed');
@@ -140,6 +141,7 @@ module.exports = class AutoScroll {
     addEventListener('mousedown', mouseListener, true);
   }
   stop() {
+    outer.remove();
     removeEventListener('mousedown', mouseListener, true);
   }
 
