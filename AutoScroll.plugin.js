@@ -2,11 +2,11 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
- * @version 0.2.3
+ * @version 0.2.4
  * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
- * @authorLink https://fosstodon.org/@Luna
- * @donate https://ko-fi.com/programmerpony
- * @source https://gitlab.com/programmerpony/BD-AutoScroll
+ * @authorLink https://programmerpony.com/
+ * @donate https://liberapay.com/programmerpony/
+ * @source https://codeberg.org/programmerpony/BD-AutoScroll
  */
 
 
@@ -112,7 +112,7 @@ module.exports = class AutoScroll {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.2.3';
+    return '0.2.4';
   }
   getAuthor() {
     return 'programmerpony';
@@ -167,6 +167,15 @@ module.exports = class AutoScroll {
             id:'sameSpeedCheckbox',
             checked: BdApi.loadData('AutoScroll', 'sameSpeed') || false,
             onChange: ((value) => BdApi.saveData('AutoScroll', 'sameSpeed', value))
+          })
+        ),
+        BdApi.React.createElement('br', {}),
+        BdApi.React.createElement('div', {class:'labelRow-2jl9gK'},
+          BdApi.React.createElement('label', {for: 'onlyScrollVerticallyCheckbox', class: 'title-2dsDLn'}, 'Only scroll vertically'),
+          BdApi.React.createElement(CheckBox, {
+            id:'onlyScrollVerticallyCheckbox',
+            checked: BdApi.loadData('AutoScroll', 'onlyScrollVertically') || false,
+            onChange: ((value) => BdApi.saveData('AutoScroll', 'onlyScrollVertically', value))
           })
         )
       )
@@ -251,7 +260,7 @@ function direction(x, y) {
 }
 
 function startCycle(elem, scroller, root) {
-  let scrollX = (root ? window.scrollX : scroller.scrollLeft), scrollY = (root ? window.scrollY : scroller.scrollTop);
+  let scrollX = root ? window.scrollX : scroller.scrollLeft, scrollY = root ? window.scrollY : scroller.scrollTop;
   function loop() {
     state.timeout = requestAnimationFrame(loop);
     let scrollWidth  = scroller.scrollWidth  - elem.clientWidth, scrollHeight = scroller.scrollHeight - elem.clientHeight;
@@ -261,10 +270,9 @@ function startCycle(elem, scroller, root) {
     else if (scrollX > scrollWidth) scrollX = scrollWidth;
     if (scrollY < 0) scrollY = 0;
     else if (scrollY > scrollHeight) scrollY = scrollHeight;
-
-    if (root) window.scroll(scrollX, scrollY);
+    if (root) window.scroll(BdApi.loadData('AutoScroll','onlyScrollVertically') ? window.scrollX : scrollX, scrollY);
     else {
-      scroller.scrollLeft = scrollX;
+      if (!BdApi.loadData('AutoScroll','onlyScrollVertically')) scroller.scrollLeft = scrollX;
       scroller.scrollTop  = scrollY;
     }
   }
