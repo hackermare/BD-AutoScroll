@@ -4,6 +4,6 @@ AutoScroll is a plugin for [BetterDiscord](https://betterdiscord.app/) that brin
 ![Demo](https://cdn.discordapp.com/attachments/862296245922037800/934057299729870868/autoscroll.gif)
 
 # Installation
-If you don't have BetterDiscord installed, follow [this guide](https://github.com/BetterDiscord/BetterDiscord/wiki/Installation).
+If you don't have BetterDiscord installed, follow [this guide](https://docs.betterdiscord.app/general/introduction/installation/).
 
 Once you have BetterDiscord, [download the plugin](https://github.com/hackermare/BD-AutoScroll/releases/latest) and move it to the plugins folder.
