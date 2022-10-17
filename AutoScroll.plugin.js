@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
- * @version 0.2.4
+ * @version 0.2.5
  * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://programmerpony.com/
  * @donate https://liberapay.com/programmerpony/
@@ -71,26 +71,15 @@ const math = {
   }
 }
 
-const Slider = BdApi.findModuleByDisplayName('Slider');
-const Switch = BdApi.findModuleByDisplayName('Switch');
-class CheckBox extends BdApi.React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {checked: this.props.checked};
-    }
-    render() {
-        return (
-          BdApi.React.createElement(Switch, {
-            id: this.props.id,
-            checked: this.state.checked,
-            onChange: (value) => {
-                this.setState({ checked: value });
-                this.props.onChange(value);
-                this.forceUpdate();
-            }
-      }));
-    }
-}
+const Slider = BdApi.Webpack.getModule(m => m?.prototype?.renderMark);
+const Switch = ({ onChange, defaultValue, note, children }) => {
+  const [value, setValue] = BdApi.React.useState(defaultValue);
+  const onChangeFunc = newValue => {
+      onChange(newValue);
+      setValue(newValue);
+  };
+  return BdApi.React.createElement(BdApi.Webpack.getModule(m => m?.toString?.()?.includes?.('helpdeskArticleId')), { onChange: onChangeFunc, note, value, children });
+};
 
 const mouseListener = (e) => {
   if (state.scrolling) stopEvent(e, true);
@@ -112,7 +101,7 @@ module.exports = class AutoScroll {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.2.4';
+    return '0.2.5';
   }
   getAuthor() {
     return 'programmerpony';
@@ -144,7 +133,6 @@ module.exports = class AutoScroll {
     outer.remove();
     removeEventListener('mousedown', mouseListener, true);
   }
-
   getSettingsPanel() {
     return (
       BdApi.React.createElement('div', { id: 'autoscroll_settings' },
@@ -161,23 +149,17 @@ module.exports = class AutoScroll {
           equidistant: true
         }),
         BdApi.React.createElement('br', {}),
-        BdApi.React.createElement('div', {class:'labelRow-2jl9gK'},
-          BdApi.React.createElement('label', {for: 'sameSpeedCheckbox', class: 'title-2dsDLn'}, 'Scroll at the same speed (ignore mouse movement)'),
-          BdApi.React.createElement(CheckBox, {
-            id:'sameSpeedCheckbox',
-            checked: BdApi.loadData('AutoScroll', 'sameSpeed') || false,
-            onChange: ((value) => BdApi.saveData('AutoScroll', 'sameSpeed', value))
-          })
-        ),
+        BdApi.React.createElement(Switch, {
+          onChange: value => BdApi.saveData('AutoScroll', 'sameSpeed', value),
+          note: 'Ignores mouse movement.',
+          defaultValue: BdApi.loadData('AutoScroll', 'sameSpeed') || false
+        }, 'Scroll at the same speed'),
         BdApi.React.createElement('br', {}),
-        BdApi.React.createElement('div', {class:'labelRow-2jl9gK'},
-          BdApi.React.createElement('label', {for: 'onlyScrollVerticallyCheckbox', class: 'title-2dsDLn'}, 'Only scroll vertically'),
-          BdApi.React.createElement(CheckBox, {
-            id:'onlyScrollVerticallyCheckbox',
-            checked: BdApi.loadData('AutoScroll', 'onlyScrollVertically') || false,
-            onChange: ((value) => BdApi.saveData('AutoScroll', 'onlyScrollVertically', value))
-          })
-        )
+        BdApi.React.createElement(Switch, {
+          onChange: value => BdApi.saveData('AutoScroll', 'onlyScrollVertically', value),
+          note: `Useful if you're having problems with themes.`,
+          defaultValue: BdApi.loadData('AutoScroll', 'onlyScrollVertically') || false
+        }, 'Only scroll vertically'),
       )
     );
   }
