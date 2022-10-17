@@ -3,10 +3,10 @@
  * @author programmerpony
  * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
  * @version 0.2.5
- * @updateUrl https://raw.githubusercontent.com/programmer-pony/BD-AutoScroll/main/AutoScroll.plugin.js
+ * @updateUrl https://raw.githubusercontent.com/hackermare/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://programmerpony.com/
  * @donate https://liberapay.com/programmerpony/
- * @source https://codeberg.org/programmerpony/BD-AutoScroll
+ * @source https://github.com/hackermare/BD-AutoScroll
  */
 
 
