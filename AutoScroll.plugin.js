@@ -224,9 +224,9 @@ function stopEvent(e, preventDefault) {
 }
 
 function image(o) {
-  if (o.width && o.height) return 'https://raw.githubusercontent.com/Pauan/AutoScroll/master/src/data/images/origin/both.svg';
-  else if (o.width) return 'https://raw.githubusercontent.com/Pauan/AutoScroll/master/src/data/images/origin/horizontal.svg';
-  else return 'https://raw.githubusercontent.com/Pauan/AutoScroll/master/src/data/images/origin/vertical.svg';
+  if (o.width && o.height) return 'https://raw.githubusercontent.com/hackermare/BD-AutoScroll/main/img/both.svg';
+  else if (o.width) return 'https://raw.githubusercontent.com/hackermare/BD-AutoScroll/main/img/horizontal.svg';
+  else return 'https://raw.githubusercontent.com/hackermare/BD-AutoScroll/main/img/vertical.svg';
 }
 
 function direction(x, y) {
