@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
- * @version 0.2.6
+ * @version 0.2.7
  * @updateUrl https://raw.githubusercontent.com/hackermare/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://programmerpony.com/
  * @donate https://liberapay.com/programmerpony/
@@ -17,7 +17,7 @@ This plugin is under the following license:
              -- X11/MIT License --
 
 Copyright © 2010-2018 Paul Chapman <pcxunlimited@gmail.com>
-Copyright © 2022 programmerpony <programmerpony@riseup.net>
+Copyright © 2022-2023 programmerpony <programmerpony@riseup.net>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,7 +71,7 @@ const math = {
   }
 }
 
-const Slider = BdApi.Webpack.getModule(m => m?.defaultProps?.maxValue == 100, {searchExports: true});
+const Slider = BdApi.Webpack.getModule(m => m?.defaultProps?.stickToMarkers === false, {searchExports: true});
 const Checkbox = BdApi.Webpack.getModule(m => m?.toString?.().includes("tooltipNote"), {searchExports: true});
 const Switch = ({ onChange, defaultValue, note, children }) => {
   const [value, setValue] = BdApi.React.useState(defaultValue);
@@ -102,7 +102,7 @@ module.exports = class AutoScroll {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.2.6';
+    return '0.2.7';
   }
   getAuthor() {
     return 'programmerpony';
