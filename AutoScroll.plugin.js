@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
- * @version 0.2.7
+ * @version 0.2.8
  * @updateUrl https://raw.githubusercontent.com/hackermare/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://programmerpony.com/
  * @donate https://liberapay.com/programmerpony/
@@ -102,7 +102,7 @@ module.exports = class AutoScroll {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.2.7';
+    return '0.2.8';
   }
   getAuthor() {
     return 'programmerpony';
@@ -143,22 +143,22 @@ module.exports = class AutoScroll {
           minValue: 2,
           maxValue: 20,
           defaultValue: 10,
-          initialValue: BdApi.loadData('AutoScroll', 'speed') || 10,
-          onValueChange: ((value) => BdApi.saveData('AutoScroll', 'speed', value)),
+          initialValue: BdApi.Data.load('AutoScroll', 'speed') || 10,
+          onValueChange: ((value) => BdApi.Data.save('AutoScroll', 'speed', value)),
           markers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
           stickToMarkers: true,
           equidistant: true
         }),
         BdApi.React.createElement('br', {}),
         BdApi.React.createElement(Switch, {
-          onChange: value => BdApi.saveData('AutoScroll', 'sameSpeed', value),
+          onChange: value => BdApi.Data.save('AutoScroll', 'sameSpeed', value),
           note: 'Ignores mouse movement.',
-          defaultValue: BdApi.loadData('AutoScroll', 'sameSpeed') || false
+          defaultValue: BdApi.Data.load('AutoScroll', 'sameSpeed') || false
         }, 'Scroll at the same speed'),
         BdApi.React.createElement(Switch, {
-          onChange: value => BdApi.saveData('AutoScroll', 'onlyScrollVertically', value),
+          onChange: value => BdApi.Data.save('AutoScroll', 'onlyScrollVertically', value),
           note: `Useful if you're having problems with themes.`,
-          defaultValue: BdApi.loadData('AutoScroll', 'onlyScrollVertically') || false
+          defaultValue: BdApi.Data.load('AutoScroll', 'onlyScrollVertically') || false
         }, 'Only scroll vertically')
       )
     );
@@ -252,9 +252,9 @@ function startCycle(elem, scroller, root) {
     else if (scrollX > scrollWidth) scrollX = scrollWidth;
     if (scrollY < 0) scrollY = 0;
     else if (scrollY > scrollHeight) scrollY = scrollHeight;
-    if (root) window.scroll(BdApi.loadData('AutoScroll','onlyScrollVertically') ? window.scrollX : scrollX, scrollY);
+    if (root) window.scroll(BdApi.Data.load('AutoScroll','onlyScrollVertically') ? window.scrollX : scrollX, scrollY);
     else {
-      if (!BdApi.loadData('AutoScroll','onlyScrollVertically')) scroller.scrollLeft = scrollX;
+      if (!BdApi.Data.load('AutoScroll','onlyScrollVertically')) scroller.scrollLeft = scrollX;
       scroller.scrollTop  = scrollY;
     }
   }
@@ -266,7 +266,7 @@ function shouldSticky(x, y) {
 }
 
 function scale(value) {
-  let speed = BdApi.loadData('AutoScroll','speed') || 10;
+  let speed = BdApi.Data.load('AutoScroll','speed') || 10;
   return value / (21-speed);
 }
 
@@ -279,7 +279,7 @@ function mousemove(event) {
   let x = event.clientX - state.oldX, y = event.clientY - state.oldY;
   if (math.hypot(x, y) > 10) {
     inner.style.setProperty('cursor', direction(x, y));
-    if (BdApi.loadData('AutoScroll','sameSpeed')) {
+    if (BdApi.Data.load('AutoScroll','sameSpeed')) {
       x = math.max(x, 1) * 50;
       y = math.max(y, 1) * 50;
     }
