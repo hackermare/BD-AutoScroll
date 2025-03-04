@@ -2,7 +2,7 @@
  * @name AutoScroll
  * @author programmerpony
  * @description Autoscroll with the mouse wheel button on GNU/Linux and macOS!
- * @version 0.2.8
+ * @version 0.3.0
  * @updateUrl https://raw.githubusercontent.com/hackermare/BD-AutoScroll/main/AutoScroll.plugin.js
  * @authorLink https://programmerpony.com/
  * @donate https://liberapay.com/programmerpony/
@@ -17,7 +17,7 @@ This plugin is under the following license:
              -- X11/MIT License --
 
 Copyright © 2010-2018 Paul Chapman <pcxunlimited@gmail.com>
-Copyright © 2022-2023 programmerpony <programmerpony@riseup.net>
+Copyright © 2022-2025 programmerpony <programmerpony@riseup.net>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -71,17 +71,6 @@ const math = {
   }
 }
 
-const Slider = BdApi.Webpack.getModule(m => m?.defaultProps?.stickToMarkers === false, {searchExports: true});
-const Checkbox = BdApi.Webpack.getModule(m => m?.toString?.().includes("tooltipNote"), {searchExports: true});
-const Switch = ({ onChange, defaultValue, note, children }) => {
-  const [value, setValue] = BdApi.React.useState(defaultValue);
-  const onChangeFunc = newValue => {
-      onChange(newValue);
-      setValue(newValue);
-  };
-  return BdApi.React.createElement(Checkbox, { onChange: onChangeFunc, note, value, children });
-};
-
 const mouseListener = (e) => {
   if (state.scrolling) stopEvent(e, true);
   else {
@@ -97,12 +86,42 @@ const mouseListener = (e) => {
   }
 }
 
+const settings = [
+  {
+    type: 'slider',
+    id: 'speed',
+    name: 'Scroll speed',
+    note: 'How fast the autoscroll is',
+    value: BdApi.Data.load('AutoScroll', 'speed') || 10,
+    min: 1,
+    max: 20,
+    markers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
+    stickToMarkers: true
+  },
+  {
+    type: 'switch',
+    id: 'sameSpeed',
+    name: 'Always scroll at the same speed',
+    note: 'Ignores mouse movement',
+    value: BdApi.Data.load('AutoScroll', 'sameSpeed') || false
+  },
+  {
+    type: 'switch',
+    id: 'onlyScrollVertically',
+    name: 'Only scroll vertically',
+    note: 'Enable this if your current theme is causing issues with horizontal scrolling',
+    value: BdApi.Data.load('AutoScroll', 'onlyScrollVertically') || false
+  }
+]
+
+const getSetting = (id) => settings.find(s=>s.id==id).value;
+
 module.exports = class AutoScroll {
   getName() {
     return 'AutoScroll';
   }
   getVersion() {
-    return '0.2.8';
+    return '0.3.0';
   }
   getAuthor() {
     return 'programmerpony';
@@ -135,33 +154,13 @@ module.exports = class AutoScroll {
     removeEventListener('mousedown', mouseListener, true);
   }
   getSettingsPanel() {
-    return (
-      BdApi.React.createElement('div', { id: 'autoscroll_settings' },
-        BdApi.React.createElement('label', {class: 'title-2yADjX'}, 'Move speed'),
-        BdApi.React.createElement('br', {}),
-        BdApi.React.createElement(Slider, {
-          minValue: 2,
-          maxValue: 20,
-          defaultValue: 10,
-          initialValue: BdApi.Data.load('AutoScroll', 'speed') || 10,
-          onValueChange: ((value) => BdApi.Data.save('AutoScroll', 'speed', value)),
-          markers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20],
-          stickToMarkers: true,
-          equidistant: true
-        }),
-        BdApi.React.createElement('br', {}),
-        BdApi.React.createElement(Switch, {
-          onChange: value => BdApi.Data.save('AutoScroll', 'sameSpeed', value),
-          note: 'Ignores mouse movement.',
-          defaultValue: BdApi.Data.load('AutoScroll', 'sameSpeed') || false
-        }, 'Scroll at the same speed'),
-        BdApi.React.createElement(Switch, {
-          onChange: value => BdApi.Data.save('AutoScroll', 'onlyScrollVertically', value),
-          note: `Useful if you're having problems with themes.`,
-          defaultValue: BdApi.Data.load('AutoScroll', 'onlyScrollVertically') || false
-        }, 'Only scroll vertically')
-      )
-    );
+    return BdApi.UI.buildSettingsPanel({
+      settings: settings,
+      onChange: (category, id, value) => {
+        settings.find(s=>s.id==id).value = value;
+        BdApi.Data.save('AutoScroll', id, value);
+      }
+    });
   }
 };
 
@@ -252,9 +251,9 @@ function startCycle(elem, scroller, root) {
     else if (scrollX > scrollWidth) scrollX = scrollWidth;
     if (scrollY < 0) scrollY = 0;
     else if (scrollY > scrollHeight) scrollY = scrollHeight;
-    if (root) window.scroll(BdApi.Data.load('AutoScroll','onlyScrollVertically') ? window.scrollX : scrollX, scrollY);
+    if (root) window.scroll(getSetting('onlyScrollVertically') ? window.scrollX : scrollX, scrollY);
     else {
-      if (!BdApi.Data.load('AutoScroll','onlyScrollVertically')) scroller.scrollLeft = scrollX;
+      if (!getSetting('onlyScrollVertically')) scroller.scrollLeft = scrollX;
       scroller.scrollTop  = scrollY;
     }
   }
@@ -266,8 +265,8 @@ function shouldSticky(x, y) {
 }
 
 function scale(value) {
-  let speed = BdApi.Data.load('AutoScroll','speed') || 10;
-  return value / (21-speed);
+  const speed = getSetting('speed');
+  return value / (21 - speed);
 }
 
 function mousewheel(event) {
@@ -279,7 +278,7 @@ function mousemove(event) {
   let x = event.clientX - state.oldX, y = event.clientY - state.oldY;
   if (math.hypot(x, y) > 10) {
     inner.style.setProperty('cursor', direction(x, y));
-    if (BdApi.Data.load('AutoScroll','sameSpeed')) {
+    if (getSetting('sameSpeed')) {
       x = math.max(x, 1) * 50;
       y = math.max(y, 1) * 50;
     }
